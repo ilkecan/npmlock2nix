@@ -333,18 +333,18 @@ rec {
 
               if grep -I -q -r '/bin/' .; then
                 source $TMP/preinstall-env
-                patchShebangs .
 
                 binElements=$(jq --raw-output 'select(has("bin")) | .bin | if type  == "string" then . else .[] end' package.json)
                 if [ -n "$binElements" ]; then
                   while read binElement; do
                     [ ! -x $binElement ] || continue
 
-                    echo "chmod and patch $(pwd)/$binElement"
+                    echo "chmod +x $(pwd)/$binElement"
                     chmod +x $binElement
-                    patchShebangs $binElement
                   done <<< "$binElements"
                 fi
+
+                patchShebangs .
               fi
             '';
           executable = true;
